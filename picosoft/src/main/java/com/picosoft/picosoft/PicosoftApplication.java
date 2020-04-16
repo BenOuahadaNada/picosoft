@@ -21,7 +21,7 @@ public class PicosoftApplication  implements CommandLineRunner{
 	/*Autowired
 	private UserService userService;
 	@Autowired
-	private RoleRepository roles;
+	private RoleRepository roles; hhhhhhhhhh 
 */
 	@Override
 	public void run(String... args) throws Exception {
