@@ -22,7 +22,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.picosoft.picosoft.dao.DepartementRepository;
 import com.picosoft.picosoft.dao.UserRepository;
+import com.picosoft.picosoft.module.Departement;
 import com.picosoft.picosoft.module.User;
 
 @Transactional
@@ -31,6 +33,10 @@ import com.picosoft.picosoft.module.User;
 public class UserController {
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	DepartementRepository deptRepository;
+	
 	@Autowired
 	private BCryptPasswordEncoder bcryptpasswordEncoder;
 	
@@ -59,6 +65,12 @@ public class UserController {
 	@GetMapping(value="/all")
 	public List<User> getAllUser(){
 			return userRepository.findAll();
+		}
+	
+	@PreAuthorize("hasAuthority('responsable_rh')")
+	@GetMapping(value="/allDepartement")
+	public List<Departement> getAllDepartement(){
+			return deptRepository.findAll();
 		}
 	
 	@PreAuthorize("hasAuthority('responsable_rh')")

@@ -29,20 +29,20 @@ public class RoleController {
 	@Autowired
 	RoleRepository roleRepository;
 	
-	@PreAuthorize("hasAuthority('admin')")
+	@PreAuthorize("hasAnyAuthority('admin','responsable_rh')")
 	@GetMapping(value="/allRole")
     public List<Role> getAllRole(){
         return roleRepository.findAll();
     }
 	
-	@PreAuthorize("hasAuthority('admin')")
+	@PreAuthorize("hasAnyAuthority('admin','responsable_rh')")
 	@GetMapping(value="/role/{id}")
     public ResponseEntity<Role> getRoleById(@PathVariable Long id) throws Exception{
         Role role = roleRepository.findById(id).orElseThrow(()->new Exception("Le role n'existe pas"));
         return ResponseEntity.ok().body(role);
     }
 	
-	@PreAuthorize("hasAuthority('admin')")
+	@PreAuthorize("hasAnyAuthority('admin','responsable_rh')")
 	@PostMapping(value="/ajouterRole")
     public Role AjouterRole(@Valid @RequestBody Role role){
         return roleRepository.save(role);
@@ -57,7 +57,7 @@ public class RoleController {
         return ResponseEntity.ok(role);
     }
 	
-	@PreAuthorize("hasAuthority('admin')")
+	@PreAuthorize("hasAnyAuthority('admin','responsable_rh')")
 	@DeleteMapping(value="/deleteRole/{id}")
     public Map<String,Boolean> deleteRole(@PathVariable Long id) throws Exception{
         Role role = roleRepository.findById(id).orElseThrow(()->new Exception("Le role n'existe pas"));
