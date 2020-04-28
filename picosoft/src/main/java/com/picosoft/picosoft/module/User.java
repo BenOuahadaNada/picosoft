@@ -43,6 +43,7 @@ public class User {
 	
 	private String password;
 	
+	
 	@ManyToOne
 	private Politique politique;
 	

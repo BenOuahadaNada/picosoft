@@ -55,6 +55,7 @@ public class JourFerieController {
     public ResponseEntity<JourFerie> updateJour(@PathVariable Long id, @Valid @RequestBody JourFerie JourDetails) throws Exception{
         JourFerie jour = jourFerieRepository.findById(id).orElseThrow(()->new Exception("Jour Férié n'existe pas"));
         jour.setNom(JourDetails.getNom());
+        jour.setDate(JourDetails.getDate());
         jourFerieRepository.save(jour);
         return ResponseEntity.ok(jour);
     }

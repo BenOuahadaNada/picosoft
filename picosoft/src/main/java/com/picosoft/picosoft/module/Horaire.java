@@ -25,9 +25,9 @@ public class Horaire {
 	private Long id;
 	private String nom;
 	
-	@OneToOne(mappedBy = "horaire" ,cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "horaire" ,cascade = CascadeType.ALL)
 	@JsonIgnore
-	private HoraireJour horaireJour;
+	private List<HoraireJour> horaireJour;
 	
 	@OneToMany(mappedBy = "horaire", cascade = CascadeType.ALL)
 	@JsonIgnore

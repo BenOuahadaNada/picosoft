@@ -55,7 +55,6 @@ public class AppHoraireController {
         ApplicationHoraire appHor = apphoraireRepository.findById(id).orElseThrow(()->new Exception("Application Horaire n'existe pas"));
         appHor.setDate(appHorDetails.getDate());
         appHor.setHoraire(appHorDetails.getHoraire());
-        appHor.setPolitique(appHorDetails.getPolitique());
         apphoraireRepository.save(appHor);
         return ResponseEntity.ok(appHor);
     }

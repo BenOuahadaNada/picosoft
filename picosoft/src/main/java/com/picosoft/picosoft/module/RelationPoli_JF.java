@@ -18,14 +18,14 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data @NoArgsConstructor @AllArgsConstructor @ToString
 public class RelationPoli_JF implements Serializable{
-	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	
 	@ManyToOne
 	private Politique politique;
 	
-	@Id
 	@ManyToOne
 	private JourFerie jourferie;
-	
 
 }

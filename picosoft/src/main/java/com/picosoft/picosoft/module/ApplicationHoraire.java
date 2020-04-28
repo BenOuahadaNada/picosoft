@@ -29,9 +29,6 @@ public class ApplicationHoraire {
 	@ManyToOne
 	private Horaire horaire;
 	
-	@ManyToOne
-	private Politique politique;
-	
 	@OneToMany(mappedBy = "appHoraire" , cascade = CascadeType.ALL)
 	@JsonIgnore
 	private List<RelationAppPolitique> relationApp;

@@ -29,8 +29,6 @@ public class JourFerie {
 	private String nom;
 	private String date;
 	
-	@ManyToOne
-	private Politique politique;
 	
 	@OneToMany(mappedBy = "jourferie", cascade = CascadeType.ALL)
 	@JsonIgnore
