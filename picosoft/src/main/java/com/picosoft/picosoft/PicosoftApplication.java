@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+import com.picosoft.picosoft.controller.UserController;
 import com.picosoft.picosoft.dao.RoleRepository;
 import com.picosoft.picosoft.dao.UserRepository;
 import com.picosoft.picosoft.module.Role;
@@ -17,6 +18,7 @@ public class PicosoftApplication  implements CommandLineRunner{
 
 	public static void main(String[] args) {
 		SpringApplication.run(PicosoftApplication.class, args);
+			
 	}
 	/*Autowired
 	private UserService userService;

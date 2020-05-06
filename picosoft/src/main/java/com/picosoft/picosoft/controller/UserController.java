@@ -61,6 +61,11 @@ public class UserController {
 		}
 	}
 	
+	@GetMapping(value="/{email}")
+	public User getUserByEmail(@PathVariable String email) {
+		return userRepository.findByEmail(email);
+	}
+	
 	@PreAuthorize("hasAuthority('responsable_rh')")
 	@GetMapping(value="/all")
 	public List<User> getAllUser(){
@@ -76,17 +81,6 @@ public class UserController {
 	@PreAuthorize("hasAuthority('responsable_rh')")
 	@PostMapping(value="/ajouterUser")
 	public User AjouterUser(@Valid @RequestBody User user) {
-		/*System.out.println(user.getNom());
-		System.out.println(user.getPrenom());
-		if(user.getDepartement() != null )
-		System.out.println(user.getDepartement().getDeptName());
-		System.out.println(user.getEmail());
-		if(user.getRole() != null)
-		System.out.println(user.getRole().getRole());
-		System.out.println(user.getGender());
-		System.out.println(user.getPassword());
-		if(user.getPolitique() != null)
-		System.out.println(user.getPolitique().getNom());*/
 		user.setPassword(bcryptpasswordEncoder.encode("12345678"));
 		return userRepository.save(user);
 	}

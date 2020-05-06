@@ -54,9 +54,7 @@ public class User {
 	private Role role;
 
 	
-	
-	/*@OneToMany(mappedBy="user", cascade=CascadeType.ALL)
-	private List<Pointage> pointage;*/
-
-
+	@OneToMany(mappedBy="user", cascade=CascadeType.ALL)
+	@JsonIgnore
+	private List<Pointage> pointage;
 }
