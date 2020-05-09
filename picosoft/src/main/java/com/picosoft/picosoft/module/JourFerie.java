@@ -18,7 +18,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Entity
+@Entity(name="jour_ferie")
 @Data @NoArgsConstructor @AllArgsConstructor @ToString
 public class JourFerie {
 

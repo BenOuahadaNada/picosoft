@@ -15,7 +15,7 @@ import lombok.Data;
 import lombok.ToString;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Entity(name="relation_poli_jf")
 @Data @NoArgsConstructor @AllArgsConstructor @ToString
 public class RelationPoli_JF implements Serializable{
 	@Id

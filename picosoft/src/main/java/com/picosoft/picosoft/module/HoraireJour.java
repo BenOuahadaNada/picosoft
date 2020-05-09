@@ -16,7 +16,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Entity
+@Entity(name="horaire_jour")
 @Data @NoArgsConstructor @AllArgsConstructor @ToString
 public class HoraireJour {
 	@Id

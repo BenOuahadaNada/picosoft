@@ -18,6 +18,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	public List<User> findByPrenom(String prenom);
 	
-	
 
 }

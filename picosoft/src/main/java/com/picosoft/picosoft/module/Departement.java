@@ -17,7 +17,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Entity
+@Entity(name="departement")
 @Data @AllArgsConstructor @NoArgsConstructor @ToString
 public class Departement {
 	@Id

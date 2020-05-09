@@ -16,7 +16,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Entity
+@Entity(name="relation_app_politique")
 @Data @NoArgsConstructor @AllArgsConstructor @ToString
 public class RelationAppPolitique implements Serializable{
 	@Id

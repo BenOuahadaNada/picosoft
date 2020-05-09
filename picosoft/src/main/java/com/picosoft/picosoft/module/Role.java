@@ -22,7 +22,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Entity
+@Entity(name="role")
 @Data @AllArgsConstructor @NoArgsConstructor @ToString
 public class Role {
 	

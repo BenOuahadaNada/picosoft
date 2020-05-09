@@ -101,6 +101,20 @@ public class UserController {
 		return ResponseEntity.ok(userModified);
 	}
 	
+	@PreAuthorize("hasAnyAuthority('admin','responsable_rh','employe','manager')")
+	@PutMapping(value="/updatePassword/{id}")
+	public User updatePassword(@PathVariable Long id,@Valid  @RequestBody HashMap<String, String> data  ) throws Exception  {
+		//user.setPassword(bcryptpasswordEncoder.encode(user.getPassword())) ;
+	System.out.println(bcryptpasswordEncoder.encode(data.get("oldpassword")));
+	 System.out.println(data.get("newPassword"));
+	 User user= userRepository.findById(id).orElseThrow(()->new Exception("user not found"));
+		if(bcryptpasswordEncoder.matches(data.get("oldpassword"), user.getPassword())) {
+		user.setPassword(bcryptpasswordEncoder.encode(data.get("newPassword")));
+		userRepository.save(user);
+		}	
+		return user ;
+    }
+	
 	@PreAuthorize("hasAuthority('responsable_rh')")
 	@DeleteMapping(value="/deleteUser/{id}")
 	public Map<String,Boolean> deleteUser(@PathVariable Long id) throws Exception{

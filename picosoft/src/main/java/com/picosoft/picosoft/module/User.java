@@ -27,7 +27,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-@Entity
+@Entity(name="user")
 @Data @AllArgsConstructor @NoArgsConstructor @ToString
 public class User {
 	
