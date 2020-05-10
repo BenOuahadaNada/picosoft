@@ -66,13 +66,13 @@ public class UserController {
 		return userRepository.findByEmail(email);
 	}
 	
-	@PreAuthorize("hasAuthority('responsable_rh')")
+	@PreAuthorize("hasAnyAuthority('admin','responsable_rh','employe','manager')")
 	@GetMapping(value="/all")
 	public List<User> getAllUser(){
 			return userRepository.findAll();
 		}
 	
-	@PreAuthorize("hasAuthority('responsable_rh')")
+	@PreAuthorize("hasAnyAuthority('admin','responsable_rh','employe','manager')")
 	@GetMapping(value="/allDepartement")
 	public List<Departement> getAllDepartement(){
 			return deptRepository.findAll();
