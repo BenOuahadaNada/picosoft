@@ -31,7 +31,7 @@ public class Pointage {
 	private Long id;
 	
 	private Time checkTime;
-	private Date CheckDate;
+	private String CheckDate;
 	private String CheckType;
 
 	private int VerifyCode;

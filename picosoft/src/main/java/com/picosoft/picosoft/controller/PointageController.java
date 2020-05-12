@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -19,9 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,16 +45,30 @@ public class PointageController {
 	@Autowired
 	UserRepository userRepo;
 	
-	@PostMapping(value="/ajouterPointage")
-	public List<Pointage> AjouterPointage(@Valid @RequestBody Pointage p) {
-		return (List<Pointage>) pointage.save(p);
+	@PreAuthorize("hasAuthority('responsable_rh')")
+	@GetMapping(value="/allPointage/{email}")
+	public List<Pointage> getAllPointage(@PathVariable String email){
+		return pointage.findAllByEmail(email);
 	}
 	
-	/*@GetMapping(value="/checktime")
-	public List<Pointage> getCheckTime() {
-		return  pointage.findChecktimes();
+	@PreAuthorize("hasAnyAuthority('responsable_rh','admin', 'manager', 'employe')")
+	@GetMapping(value="/allpointage")
+	public List<Pointage> getAll(){
+		return pointage.findAll();
+	}
 	
-	}*/
+	@PreAuthorize("hasAuthority('responsable_rh')")
+	@PostMapping(value="/ajouterPointage")
+	public Pointage AjouterPointage(@Valid @RequestBody Pointage p) {
+		return pointage.save(p);
+	}
+	
+	@PreAuthorize("hasAnyAuthority('responsable_rh','admin', 'manager', 'employe')")
+	@GetMapping(value="/checktime/{date}/{email}")
+	public List<Object> getCheckTime(@PathVariable String date , @PathVariable String email) {
+		return  pointage.findChecktime(date , email);
+	
+	}
 	
 	/*@GetMapping(value="/check/{date}/{iduser}")
 	public List<OutRepository> getCheckTimeIn(@PathVariable String date, @PathVariable Long iduser) {

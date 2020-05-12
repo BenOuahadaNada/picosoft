@@ -31,9 +31,13 @@ public interface PointageRepository extends JpaRepository<Pointage, Long> {
 /*	@Query("SELECT convert(check_time, char) FROM pointage p, user u WHERE ((p.verify_code=1 OR p.verify_code=101) and (p.user_id_user=u.id_user and u.email=:email and check_date=:checkdate)) GROUP BY u.id_user",
 			nativeQuery=true)
 	public List<Object> findChecktime(@Param("checkdate") String checkdate , @Param("email") String email);*/
+	//select p.id, p.checkktime from pointage p where (verfrycdeo=1 or verfiey code =0) and date=x groupe by p.id
 	
-	/*@Query("select p from Pointage p")
-	public List<Pointage> findChecktimes();
-	*/
+	@Query("select u.email , p.checkTime from pointage p join p.user u where p.user.email=u.email and u.email=:email and p.CheckDate=:date ")
+	public List<Object> findChecktime(@Param ("date") String date , @Param("email") String email);
+	
+	@Query("select p from pointage p where p.user.email=:email")
+	public List<Pointage> findAllByEmail(@Param("email") String email);
+	
 
 }
