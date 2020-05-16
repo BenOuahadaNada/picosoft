@@ -1,5 +1,6 @@
 package com.picosoft.picosoft.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,6 +79,13 @@ public class UserController {
 			return deptRepository.findAll();
 		}
 	
+	@PreAuthorize("hasAnyAuthority('admin','responsable_rh','employe','manager')")
+	@GetMapping(value="/allManager")
+	public List<User> getAllManager(){
+		return userRepository.findAllManager();
+		
+	}
+	
 	@PreAuthorize("hasAuthority('responsable_rh')")
 	@PostMapping(value="/ajouterUser")
 	public User AjouterUser(@Valid @RequestBody User user) {
@@ -97,6 +105,7 @@ public class UserController {
 		user.setDepartement(userUpdated.getDepartement());
 		user.setPolitique(userUpdated.getPolitique());
 		user.setRole(userUpdated.getRole());
+		user.setSuperior(userUpdated.getSuperior());
 		User userModified=userRepository.save(user);
 		return ResponseEntity.ok(userModified);
 	}

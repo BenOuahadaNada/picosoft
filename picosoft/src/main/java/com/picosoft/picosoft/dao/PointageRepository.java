@@ -33,8 +33,11 @@ public interface PointageRepository extends JpaRepository<Pointage, Long> {
 	public List<Object> findChecktime(@Param("checkdate") String checkdate , @Param("email") String email);*/
 	//select p.id, p.checkktime from pointage p where (verfrycdeo=1 or verfiey code =0) and date=x groupe by p.id
 	
-	@Query("select u.email , p.checkTime from pointage p join p.user u where p.user.email=u.email and u.email=:email and p.CheckDate=:date ")
-	public List<Object> findChecktime(@Param ("date") String date , @Param("email") String email);
+	@Query("select u.email , p.checkTime from pointage p join p.user u where p.user.email=u.email and u.email=:email and p.CheckDate=:date and p.VerifyCode=101")
+	public List<Object> findCheckOut(@Param ("date") String date , @Param("email") String email);
+	
+	@Query("select u.email , p.checkTime from pointage p join p.user u where p.user.email=u.email and u.email=:email and p.CheckDate=:date and p.VerifyCode=1")
+	public List<Object> findCheckIn(@Param ("date") String date , @Param("email") String email);
 	
 	@Query("select p from pointage p where p.user.email=:email")
 	public List<Pointage> findAllByEmail(@Param("email") String email);

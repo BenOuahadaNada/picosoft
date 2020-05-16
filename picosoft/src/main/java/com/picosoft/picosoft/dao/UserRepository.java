@@ -1,6 +1,7 @@
 package com.picosoft.picosoft.dao;
 
 import java.util.List;
+
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,6 +20,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	public List<User> findByPrenom(String prenom);
 	
 	public boolean findUserByEmail(String email);
+	
+	@Query("select u from user u where u.role.role='manager' ")
+	public List<User> findAllManager();
 	
 
 }

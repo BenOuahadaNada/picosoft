@@ -27,6 +27,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
 @Entity(name="user")
 @Data @AllArgsConstructor @NoArgsConstructor @ToString
 public class User {
@@ -53,6 +54,12 @@ public class User {
 	@ManyToOne
 	private Role role;
 
+	@ManyToOne
+	private User superior;
+	
+	@OneToMany(mappedBy="superior", cascade=CascadeType.ALL)
+	@JsonIgnore
+	private List<User> equipe;
 	
 	@OneToMany(mappedBy="user", cascade=CascadeType.ALL)
 	@JsonIgnore

@@ -17,6 +17,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,23 +60,29 @@ public class PointageController {
 	
 	@PreAuthorize("hasAuthority('responsable_rh')")
 	@PostMapping(value="/ajouterPointage")
-	public Pointage AjouterPointage(@Valid @RequestBody Pointage p) {
-		return pointage.save(p);
+	public ResponseEntity<?> AjouterPointage(@Valid @RequestBody Pointage p) {
+		if(p.getCheckDate()==null||p.getCheckTime()==null||p.getCheckType()==null||p.getUser().getIdUser()==null || p.getVerifyCode()==0)
+		{
+			return  new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		User u=userRepo.getOne(p.getUser().getIdUser());
+		p.setUser(u);
+		return  new ResponseEntity<>(pointage.save(p),HttpStatus.CREATED);
 	}
 	
 	@PreAuthorize("hasAnyAuthority('responsable_rh','admin', 'manager', 'employe')")
-	@GetMapping(value="/checktime/{date}/{email}")
-	public List<Object> getCheckTime(@PathVariable String date , @PathVariable String email) {
-		return  pointage.findChecktime(date , email);
+	@GetMapping(value="/checkout/{date}/{email}")
+	public List<Object> getCheckTimeIn(@PathVariable String date , @PathVariable String email) {
+		return  pointage.findCheckOut(date , email);
 	
 	}
 	
-	/*@GetMapping(value="/check/{date}/{iduser}")
-	public List<OutRepository> getCheckTimeIn(@PathVariable String date, @PathVariable Long iduser) {
-		List<OutRepository> in=pointage.findCheckTimeIn(date, iduser);
-		return in;
+	@PreAuthorize("hasAnyAuthority('responsable_rh','admin', 'manager', 'employe')")
+	@GetMapping(value="/checkin/{date}/{email}")
+	public List<Object> getCheckTimeOut(@PathVariable String date , @PathVariable String email) {
+		return  pointage.findCheckIn(date , email);
+	
 	}
-	*/
 	/*@GetMapping(value="/diff/{checkDate}/{id}")
 	public List<Long> getDifference(@PathVariable String checkDate, @PathVariable Long id) throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
