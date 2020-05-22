@@ -8,7 +8,9 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,8 +34,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.picosoft.picosoft.dao.PointageRepository;
 import com.picosoft.picosoft.dao.UserRepository;
-
+import com.picosoft.picosoft.module.ListStat;
 import com.picosoft.picosoft.module.Pointage;
+import com.picosoft.picosoft.module.PointageByWeek;
 import com.picosoft.picosoft.module.User;
 
 @Transactional
@@ -71,18 +74,79 @@ public class PointageController {
 	}
 	
 	@PreAuthorize("hasAnyAuthority('responsable_rh','admin', 'manager', 'employe')")
-	@GetMapping(value="/checkout/{date}/{email}")
+	@GetMapping(value="/checkin/{date}/{email}")
 	public List<Object> getCheckTimeIn(@PathVariable String date , @PathVariable String email) {
-		return  pointage.findCheckOut(date , email);
+		return  pointage.findCheckIn(date , email);
 	
 	}
 	
 	@PreAuthorize("hasAnyAuthority('responsable_rh','admin', 'manager', 'employe')")
-	@GetMapping(value="/checkin/{date}/{email}")
-	public List<Object> getCheckTimeOut(@PathVariable String date , @PathVariable String email) {
-		return  pointage.findCheckIn(date , email);
+	@GetMapping(value="/checkout/{date}/{email}")
+	public List<Object> getCheckTimeOut(@PathVariable("date") String date , @PathVariable("email") String email) {
+		return  pointage.findCheckOut(date , email);
 	
 	}
+	
+	@PreAuthorize("hasAuthority('responsable_rh')")
+	@GetMapping(value="/countEmp")
+	public int getNbEmp() {
+		return pointage.countEmployee();
+	}
+	
+	@PreAuthorize("hasAuthority('responsable_rh')")
+	@GetMapping(value="/countMember")
+	public int getNbMember() {
+		return pointage.countAll();
+	}
+	
+	@PreAuthorize("hasAuthority('responsable_rh')")
+	@GetMapping(value="/countManager")
+	public int getNbManager() {
+		return pointage.countManager();
+	}
+	
+	@PreAuthorize("hasAuthority('responsable_rh')")
+	@GetMapping(value="/countRh")
+	public int getNbRh() {
+		return pointage.countRh();
+	}
+	
+	@PreAuthorize("hasAnyAuthority('responsable_rh', 'manager')")
+	@GetMapping(value="/{email}/{datedeb}/{datefin}")
+	public List<PointageByWeek> getPointageByWeek(@PathVariable String email , @PathVariable String datedeb, @PathVariable String datefin){
+		return pointage.findPointageByWeek(email, datedeb, datefin);
+	}
+	
+	@PreAuthorize("hasAnyAuthority('responsable_rh', 'manager')")
+	@GetMapping(value="/nbheures")
+	public Map<List<ListStat>, List<Double>> getNbHeureByWeek(@PathVariable String email , @PathVariable String dateDebut, @PathVariable String dateFin){
+		List<PointageByWeek> Tab= pointage.findPointageByWeek(email, dateDebut, dateFin);
+		List<Double> percent= new ArrayList<Double>();
+		List<name, List<ListStat>> dataset= new ArrayList<name, List<ListStat>>();
+		List<ListStat> series= new ArrayList<ListStat>();
+		Double numberOfHours=(double) 0;
+		for(int i=0; i<Tab.size()-1; i=2) {
+			numberOfHours += Tab.get(i-1).getChecktime()-Tab.get(i).getChecktime();
+			if(i<Tab.size()-1 && Tab.get(i).getCheckdate()!=Tab.get(i+1).getCheckdate()) {
+				series.add(ListStat.this.setName(Tab.get(i).getCheckdate()););
+				percent.
+			}
+		}
+	}
+	/*@PreAuthorize("hasAuthority('responsable_rh')")
+	@GetMapping(value="/count")
+	public Map<String, Integer> getNbTotal(){
+        Map<String,Integer> mp= new HashMap<>();
+        int nbMember = pointage.countAll();
+        int nbEmp = pointage.countEmployee();
+        int nbManager = pointage.countManager();
+        int nbRh = pointage.countRh();
+        mp.put("member",nbMember);
+        mp.put("employe",nbEmp);
+        mp.put("manager",nbManager);
+        mp.put("responsable rh", nbRh);
+        return mp;
+    }*/
 	/*@GetMapping(value="/diff/{checkDate}/{id}")
 	public List<Long> getDifference(@PathVariable String checkDate, @PathVariable Long id) throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");

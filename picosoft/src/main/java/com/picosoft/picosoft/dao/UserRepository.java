@@ -24,5 +24,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	@Query("select u from user u where u.role.role='manager' ")
 	public List<User> findAllManager();
 	
+	@Query("select u from user u where u.superior.idUser=:id")
+	public List<User> findEquipe(@Param("id") Long id);
 
 }

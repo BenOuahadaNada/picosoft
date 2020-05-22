@@ -29,7 +29,7 @@ public class PolitiqueController {
 	@Autowired
 	PolitiqueRepository politiqueRepository;
 	
-	@PreAuthorize("hasAuthority('responsable_rh')")
+	@PreAuthorize("hasAnyAuthority('responsable_rh', 'manager')")
 	@GetMapping(value="/allPolitique")
     public List<Politique> getAllPolitique(){
         return politiqueRepository.findAll();

@@ -61,7 +61,7 @@ public class UserController {
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 		}
 	}
-	
+	@PreAuthorize("hasAnyAuthority('responsable_rh','manager')")
 	@GetMapping(value="/{email}")
 	public User getUserByEmail(@PathVariable String email) {
 		return userRepository.findByEmail(email);
@@ -83,6 +83,13 @@ public class UserController {
 	@GetMapping(value="/allManager")
 	public List<User> getAllManager(){
 		return userRepository.findAllManager();
+		
+	}
+	
+	@PreAuthorize("hasAnyAuthority('responsable_rh','manager')")
+	@GetMapping(value="/equipe/{id}")
+	public List<User> getAllEquipe(@PathVariable Long id){
+		return userRepository.findEquipe(id);
 		
 	}
 	
