@@ -31,10 +31,10 @@ public class Pointage {
 	private Long id;
 	
 	private Time checkTime;
-	private String CheckDate;
-	private String CheckType;
+	private String checkDate;
+	private String checkType;
 
-	private int VerifyCode;
+	private int verifyCode;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	private User user;
