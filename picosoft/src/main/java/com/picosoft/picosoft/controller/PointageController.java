@@ -32,9 +32,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.picosoft.picosoft.dao.HoraireRepository;
 import com.picosoft.picosoft.dao.PointageRepository;
 import com.picosoft.picosoft.dao.UserRepository;
 import com.picosoft.picosoft.module.CountResponse;
+import com.picosoft.picosoft.module.Horaire;
 import com.picosoft.picosoft.module.ListStat;
 import com.picosoft.picosoft.module.Pointage;
 import com.picosoft.picosoft.module.PointageResponse;
@@ -49,6 +51,9 @@ public class PointageController {
 	
 	@Autowired
 	UserRepository userRepo;
+	
+	@Autowired
+	HoraireRepository horRepository;
 	
 	@PreAuthorize("hasAuthority('responsable_rh')")
 	@GetMapping(value="/allPointage/{email}")
@@ -104,25 +109,6 @@ public class PointageController {
 		return pointage.findPointageByUser(email, datedeb, datefin);
 	}
 	
-	/*@PreAuthorize("hasAnyAuthority('responsable_rh', 'manager')")
-	@GetMapping(value="/nbheures")
-	public Map<List<ListStat>, List<Double>> getNbHeureByWeek(@PathVariable String email , @PathVariable String dateDebut, @PathVariable String dateFin){
-		List<Pointage> Tab= pointage.findPointageByUser(email, dateDebut, dateFin);
-		List<Double> percent= new ArrayList<Double>();
-		List<name, List<ListStat>> dataset= new ArrayList<name, List<ListStat>>();
-		List<ListStat> series= new ArrayList<ListStat>();
-		Double numberOfHours=(double) 0;
-		for(int i=0; i<Tab.size()-1; i=2) {
-			numberOfHours += Tab.get(i-1).getChecktime()-Tab.get(i).getChecktime();
-			if(i<Tab.size()-1 && Tab.get(i).getCheckdate()!=Tab.get(i+1).getCheckdate()) {
-				series.add(ListStat.this.setName(Tab.get(i).getCheckdate()););
-				percent.add(numberOfHours*100/8.5);
-				numberOfHours=(double) 0;
-			}
-		}
-		percent.add(numberOfHours*100/8.5);
-		series.add(Tab.get(Tab.get(index)))
-	}*/ 
 	@PreAuthorize("hasAnyAuthority('responsable_rh', 'manager')")
 	@GetMapping(value="/nbheures/{email}/{dateDebut}/{dateFin}")
 	public List<PointageResponse> getNbHeureByWeek(@PathVariable("email") String email , @PathVariable("dateDebut")  String dateDebut, @PathVariable("dateFin")  String dateFin){
@@ -145,6 +131,44 @@ public class PointageController {
 		  }
 		  return mp;
 	}
+	@PreAuthorize("hasAnyAuthority('manager', 'responsable_rh')")
+	@GetMapping(value="/percent/{email}/{dateDebut}/{dateFin}")
+	public List<PointageResponse> getPercentByWeek(@PathVariable("email") String email , @PathVariable("dateDebut")  String dateDebut, @PathVariable("dateFin")  String dateFin){
+		List<PointageResponse> response= new ArrayList<>();
+		List<PointageResponse> percentResp=new ArrayList<>();
+		List <Pointage> pointages=pointage.findPointageByUser(email, dateDebut, dateFin);
+		List<Horaire> horaire=horRepository.findAll();
+		String date =  pointages.get(pointages.size()-2).getCheckDate();
+		Double percent =(double)0;
+		Double sum =(double)0;
+		  for(int i=pointages.size()-2;i>=0;i-=2) {
+			  if(!date.equals(pointages.get(i).getCheckDate())) {
+				 response.add(new PointageResponse(date, sum/3600000));
+				  sum =  (double)pointages.get(i).getCheckTime().getTime()-pointages.get(i+1).getCheckTime().getTime();
+				  date = pointages.get(i).getCheckDate();continue;
+			  }
+			  if(date.equals(pointages.get(i).getCheckDate())) {
+				  sum += (double)pointages.get(i).getCheckTime().getTime()-pointages.get(i+1).getCheckTime().getTime();
+			  }
+			  if(i<= 0) {
+				  response.add(new PointageResponse(date, sum/3600000));
+			  }
+		  }
+		  for (int i=0; i<response.size(); i++) {
+			  for(int j=0; j<horaire.size(); j++) {
+				  if(horaire.get(j).getNom().equals("Normal")) {
+					  percentResp.add(new PointageResponse(response.get(i).getName(), response.get(i).getValue()*100/8.5));break;
+				  }else if(horaire.get(j).getNom().equals("Seance Unique")) {
+					  percentResp.add(new PointageResponse(response.get(i).getName(), response.get(i).getValue()*100/6.5));break;
+				  }else {
+					  percentResp.add(new PointageResponse(response.get(i).getName(), response.get(i).getValue()*100/7));break;
+				  }
+				  
+			  }
+		  }
+		  return percentResp;
+	}
+	
 	@PreAuthorize("hasAuthority('responsable_rh')")
 	@GetMapping(value="/count")
 	public List<CountResponse> getNbTotal(){
@@ -159,23 +183,4 @@ public class PointageController {
         mp.add(new CountResponse("responsable rh", nbRh));
         return mp;
     }
-	/*@GetMapping(value="/diff/{checkDate}/{id}")
-	public List<Long> getDifference(@PathVariable String checkDate, @PathVariable Long id) throws ParseException {
-		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-		List<Long> diff= new ArrayList<>();
-		//List<String> diffS=diff.stream().map(Object::toString).collect(Collectors.toList());
-		List<Out> out= pointage.findCheckTimeOut(checkDate, id);
-		List<Out> in= pointage.findCheckTimeIn(checkDate, id);
-		/*for(Object objet: out) {
-			diffS.add(Objects.toString(objet, null));
-		}
-		for(int i=0; i<=out.size()-1; i++) {
-			if(out.indexOf(i).get(0))
-				Date O= sdf.parse((out[0]).toString());
-				Date I=sdf.parse(in.get(0).toString());
-			    diff.add((O.getTime()- I.getTime())/3600000);
-		}
-		return diff;
-    }*/
-
 }
