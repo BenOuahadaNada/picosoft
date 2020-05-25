@@ -30,7 +30,7 @@ public class HoraireController {
 	@Autowired
 	HoraireRepository horRepository;
 	
-	@PreAuthorize("hasAuthority('responsable_rh')")
+	@PreAuthorize("hasAnyAuthority('responsable_rh','manager','employe')")
 	@GetMapping(value="/allHoraire")
     public List<Horaire> getAllHoraire(){
         return horRepository.findAll();
