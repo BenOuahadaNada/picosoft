@@ -37,7 +37,6 @@ import com.picosoft.picosoft.dao.PointageRepository;
 import com.picosoft.picosoft.dao.UserRepository;
 import com.picosoft.picosoft.module.CountResponse;
 import com.picosoft.picosoft.module.Horaire;
-import com.picosoft.picosoft.module.ListStat;
 import com.picosoft.picosoft.module.Pointage;
 import com.picosoft.picosoft.module.PointageResponse;
 import com.picosoft.picosoft.module.User;
@@ -109,7 +108,7 @@ public class PointageController {
 		return pointage.findPointageByUser(email, datedeb, datefin);
 	}
 	
-	@PreAuthorize("hasAnyAuthority('responsable_rh', 'manager')")
+	@PreAuthorize("hasAnyAuthority('responsable_rh', 'manager','employe')")
 	@GetMapping(value="/nbheures/{email}/{dateDebut}/{dateFin}")
 	public List<PointageResponse> getNbHeureByWeek(@PathVariable("email") String email , @PathVariable("dateDebut")  String dateDebut, @PathVariable("dateFin")  String dateFin){
 		List<PointageResponse> mp = new ArrayList<>();
@@ -131,13 +130,12 @@ public class PointageController {
 		  }
 		  return mp;
 	}
-	@PreAuthorize("hasAnyAuthority('manager', 'responsable_rh')")
-	@GetMapping(value="/percent/{email}/{dateDebut}/{dateFin}")
-	public List<PointageResponse> getPercentByWeek(@PathVariable("email") String email , @PathVariable("dateDebut")  String dateDebut, @PathVariable("dateFin")  String dateFin){
+	@PreAuthorize("hasAnyAuthority('manager', 'responsable_rh', 'employe')")
+	@GetMapping(value="/percent/{email}/{dateDebut}/{dateFin}/{horaire}")
+	public List<PointageResponse> getPercentByWeek(@PathVariable("email") String email , @PathVariable("dateDebut")  String dateDebut, @PathVariable("dateFin")  String dateFin , @PathVariable String horaire){
 		List<PointageResponse> response= new ArrayList<>();
 		List<PointageResponse> percentResp=new ArrayList<>();
 		List <Pointage> pointages=pointage.findPointageByUser(email, dateDebut, dateFin);
-		List<Horaire> horaire=horRepository.findAll();
 		String date =  pointages.get(pointages.size()-2).getCheckDate();
 		Double percent =(double)0;
 		Double sum =(double)0;
@@ -153,17 +151,18 @@ public class PointageController {
 			  if(i<= 0) {
 				  response.add(new PointageResponse(date, sum/3600000));
 			  }
-		  }
-		  for (int i=0; i<response.size(); i++) {
-			  for(int j=0; j<horaire.size(); j++) {
-				  if(horaire.get(j).getNom().equals("Normal")) {
-					  percentResp.add(new PointageResponse(response.get(i).getName(), response.get(i).getValue()*100/8.5));break;
-				  }else if(horaire.get(j).getNom().equals("Seance Unique")) {
-					  percentResp.add(new PointageResponse(response.get(i).getName(), response.get(i).getValue()*100/6.5));break;
-				  }else {
-					  percentResp.add(new PointageResponse(response.get(i).getName(), response.get(i).getValue()*100/7));break;
-				  }
-				  
+		  }  
+		  if(horaire.toUpperCase().equals("NORMAL")) { 
+			  for (int j=0; j<response.size(); j++) {
+				  percentResp.add(new PointageResponse(response.get(j).getName(), response.get(j).getValue()*100/8.5));
+			  }
+		  }else  if(horaire.toUpperCase().equals("SEANCE UNIQUE")) {
+			  for (int j=0; j<response.size(); j++) {
+				  percentResp.add(new PointageResponse(response.get(j).getName(), response.get(j).getValue()*100/6.5));
+			  }
+		  }else { 
+			  for (int j=0; j<response.size(); j++) { 
+				  percentResp.add(new PointageResponse(response.get(j).getName(), response.get(j).getValue()*100/7));
 			  }
 		  }
 		  return percentResp;
